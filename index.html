@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameGuard Monitor - iGaming Server Monitoring Dashboard</title>
+    <title>MonitrX - iGaming ServerSprint Monitoring Dashboard</title>
     <meta name="description" content="Professional iGaming server monitoring dashboard with real-time analytics, security monitoring, and incident management">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -38,15 +38,17 @@
             color: var(--light);
             min-height: 100vh;
             overflow-x: hidden;
+            margin: 0;
+            padding: 0;
         }
         
         .dashboard {
-            display: grid;
-            grid-template-columns: 280px 1fr;
+            display: flex;
             min-height: 100vh;
+            position: relative;
         }
         
-        /* Sidebar Styles */
+        /* Fixed Sidebar Styles */
         .sidebar {
             background: var(--glass);
             backdrop-filter: blur(20px);
@@ -56,8 +58,12 @@
             z-index: 10;
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            width: 280px;
+            overflow-y: auto;
         }
         
         .sidebar::before {
@@ -234,12 +240,16 @@
             color: var(--gray);
         }
         
-        /* Main Content Styles */
+        /* Main Content Styles - FIXED */
         .main-content {
+            margin-left: 280px; /* Match sidebar width */
+            width: calc(100% - 280px); /* Ensure proper width calculation */
             padding: 30px;
             overflow-y: auto;
             background: radial-gradient(circle at bottom left, #0a1122, #050a15);
             position: relative;
+            min-height: 100vh;
+            z-index: 1; /* Ensure content appears above background */
         }
         
         .main-content::before {
@@ -249,7 +259,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23050a15"/><path d="M0 0L100 100M100 0L0 100" stroke="%230f1a2f" stroke-width="1"/></svg>');
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23050a15"/><path d="M0 0L100 100M100 0L0 100" stroke="%230f1a2f" stroke-width="1"/></svg>');
             opacity: 0.3;
             z-index: -1;
         }
@@ -559,7 +569,7 @@
             color: var(--gray);
         }
         
-        /* Map Container */
+        /* Enhanced Map Container */
         .map-container {
             background: var(--glass);
             backdrop-filter: blur(15px);
@@ -567,25 +577,78 @@
             padding: 30px;
             box-shadow: var(--card-shadow);
             margin-bottom: 35px;
-            height: 400px;
             position: relative;
             overflow: hidden;
             border: 1px solid var(--glass-border);
         }
         
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
         .map-title {
             font-size: 1.5em;
             font-weight: 700;
-            margin-bottom: 25px;
+        }
+        
+        .map-controls {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .map-option {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .map-option:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .map-option.active {
+            background: var(--secondary);
+            box-shadow: 0 0 10px rgba(45, 116, 218, 0.5);
         }
         
         .world-map {
             width: 100%;
-            height: calc(100% - 60px);
+            height: 400px;
             background: linear-gradient(135deg, #0f1a2f, #152642);
             border-radius: 15px;
             position: relative;
             overflow: hidden;
+        }
+        
+        .satellite-view {
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(26, 83, 92, 0.8) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(44, 62, 80, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 50% 30%, rgba(30, 96, 145, 0.7) 0%, transparent 40%),
+                linear-gradient(135deg, #1a3c5f 0%, #0a2342 50%, #061a33 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .satellite-view::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 25% 25%, transparent 20%, rgba(16, 42, 67, 0.8) 100%),
+                radial-gradient(circle at 75% 75%, transparent 20%, rgba(22, 58, 91, 0.6) 100%);
+            pointer-events: none;
         }
         
         .server-node {
@@ -594,6 +657,7 @@
             height: 14px;
             border-radius: 50%;
             transform: translate(-50%, -50%);
+            cursor: pointer;
         }
         
         .server-node::after {
@@ -648,6 +712,67 @@
             border-color: var(--success);
         }
         
+        /* New Server Node Positions */
+        .node-sa {
+            top: 65%;
+            left: 30%;
+            background: var(--success);
+        }
+        
+        .node-sa::after {
+            border-color: var(--success);
+        }
+        
+        .node-me {
+            top: 45%;
+            left: 58%;
+            background: var(--success);
+        }
+        
+        .node-me::after {
+            border-color: var(--success);
+        }
+        
+        .node-africa {
+            top: 55%;
+            left: 50%;
+            background: var(--success);
+        }
+        
+        .node-africa::after {
+            border-color: var(--success);
+        }
+        
+        .node-india {
+            top: 50%;
+            left: 68%;
+            background: var(--success);
+        }
+        
+        .node-india::after {
+            border-color: var(--success);
+        }
+        
+        .node-japan {
+            top: 42%;
+            left: 82%;
+            background: var(--success);
+        }
+        
+        .node-japan::after {
+            border-color: var(--success);
+        }
+        
+        .node-canada {
+            top: 32%;
+            left: 22%;
+            background: var(--success);
+        }
+        
+        .node-canada::after {
+            border-color: var(--success);
+        }
+        
         .connection-line {
             position: absolute;
             height: 2px;
@@ -676,6 +801,126 @@
             transform: rotate(-5deg);
         }
         
+        /* Additional Connection Lines */
+        .line-4 {
+            top: 65%;
+            left: 30%;
+            width: 18%;
+            transform: rotate(15deg);
+        }
+        
+        .line-5 {
+            top: 45%;
+            left: 58%;
+            width: 10%;
+            transform: rotate(-10deg);
+        }
+        
+        .line-6 {
+            top: 42%;
+            left: 82%;
+            width: 8%;
+            transform: rotate(5deg);
+        }
+        
+        /* Data Flow Animations */
+        .data-flow {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: dataFlow 3s linear infinite;
+            opacity: 0.7;
+        }
+        
+        .flow-1 {
+            top: 40%;
+            left: 25%;
+            width: 23%;
+            animation-delay: 0s;
+        }
+        
+        .flow-2 {
+            top: 35%;
+            left: 48%;
+            width: 27%;
+            animation-delay: 1s;
+        }
+        
+        .flow-3 {
+            top: 45%;
+            left: 48%;
+            width: 27%;
+            animation-delay: 2s;
+        }
+        
+        .flow-4 {
+            top: 65%;
+            left: 30%;
+            width: 18%;
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes dataFlow {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .server-tooltip {
+            position: absolute;
+            background: rgba(10, 17, 34, 0.9);
+            border: 1px solid var(--glass-border);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 100;
+            width: 200px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .server-node:hover .server-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Server Stats Grid */
+        .server-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .server-stat {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        
+        .server-stat:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .stat-value {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: var(--gray);
+        }
+        
         .country-list {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -698,6 +943,16 @@
             border-color: var(--glass-border);
         }
         
+        .country-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .country-flag {
+            font-size: 1.2em;
+        }
+        
         .country-name {
             font-size: 0.95em;
         }
@@ -717,6 +972,11 @@
         .blocked {
             background: rgba(255, 68, 68, 0.2);
             color: var(--danger);
+        }
+        
+        .degraded {
+            background: rgba(255, 204, 0, 0.2);
+            color: var(--warning);
         }
         
         /* Right Sidebar */
@@ -1026,8 +1286,6 @@
             margin-bottom: 8px;
         }
         
-        /* NEW ENHANCEMENTS */
-        
         /* Quick Actions */
         .quick-actions {
             display: flex;
@@ -1083,49 +1341,6 @@
             height: 40px;
             width: 100%;
             margin-top: 15px;
-        }
-        
-        /* Server node tooltips */
-        .server-node {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-        }
-        
-        .server-node::after {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 50%;
-            border: 1px solid;
-            animation: pulse 2s infinite;
-        }
-        
-        .server-tooltip {
-            position: absolute;
-            background: rgba(10, 17, 34, 0.9);
-            border: 1px solid var(--glass-border);
-            padding: 15px;
-            border-radius: 10px;
-            z-index: 100;
-            width: 200px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .server-node:hover .server-tooltip {
-            opacity: 1;
-            transform: translateY(0);
         }
         
         /* Custom scrollbar */
@@ -1978,6 +2193,11 @@
             .sidebar {
                 display: none;
             }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
         }
         
         @media (max-width: 768px) {
@@ -2006,6 +2226,14 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            
+            .server-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .country-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -2021,7 +2249,7 @@
                 <div class="logo">
                     <i class="fas fa-server"></i>
                 </div>
-                <div class="logo-text">GameGuard</div>
+                <div class="logo-text">MonitrX</div>
             </div>
             <div class="nav-container">
                 <div class="nav-item active" data-section="dashboard">
@@ -2081,7 +2309,7 @@
             <!-- Dashboard Section -->
             <section id="dashboard" class="content-section active">
                 <div class="header">
-                    <h1>Server Monitoring Dashboard</h1>
+                    <h1>MoniX Dashboard</h1>
                     <div class="header-controls">
                         <button class="theme-toggle" id="themeToggle">
                             <i class="fas fa-moon"></i>
@@ -2481,43 +2709,197 @@
                             </div>
                         </div>
                         
+                        <!-- Enhanced Map Container -->
                         <div class="map-container">
-                            <div class="map-title">Global Server Network</div>
-                            <div class="world-map">
+                            <div class="map-header">
+                                <div class="map-title">Global Server Network - Satellite View</div>
+                                <div class="map-controls">
+                                    <div class="map-option active" data-view="satellite">Satellite</div>
+                                    <div class="map-option" data-view="technical">Technical</div>
+                                    <div class="map-option" data-view="traffic">Traffic</div>
+                                </div>
+                            </div>
+                            <div class="world-map satellite-view">
+                                <!-- Connection Lines -->
                                 <div class="connection-line line-1"></div>
                                 <div class="connection-line line-2"></div>
                                 <div class="connection-line line-3"></div>
-                                <div class="server-node node-us">
+                                <div class="connection-line line-4"></div>
+                                <div class="connection-line line-5"></div>
+                                <div class="connection-line line-6"></div>
+                                
+                                <!-- Data Flow Animations -->
+                                <div class="data-flow flow-1"></div>
+                                <div class="data-flow flow-2"></div>
+                                <div class="data-flow flow-3"></div>
+                                <div class="data-flow flow-4"></div>
+                                
+                                <!-- Server Nodes -->
+                                <div class="server-node node-us" data-region="na">
                                     <div class="server-tooltip">
-                                        <div><strong>US East</strong></div>
+                                        <div><strong>US East (Virginia)</strong></div>
                                         <div>Status: Operational</div>
-                                        <div>Latency: 45ms</div>
+                                        <div>Latency: 32ms</div>
                                         <div>Load: 65%</div>
+                                        <div>Capacity: 12.4K RPS</div>
                                     </div>
                                 </div>
-                                <div class="server-node node-eu">
+                                
+                                <div class="server-node node-eu" data-region="eu">
                                     <div class="server-tooltip">
-                                        <div><strong>EU Central</strong></div>
+                                        <div><strong>EU Central (Frankfurt)</strong></div>
                                         <div>Status: Operational</div>
-                                        <div>Latency: 52ms</div>
+                                        <div>Latency: 28ms</div>
                                         <div>Load: 72%</div>
+                                        <div>Capacity: 15.8K RPS</div>
                                     </div>
                                 </div>
-                                <div class="server-node node-asia">
+                                
+                                <div class="server-node node-asia" data-region="asia">
                                     <div class="server-tooltip">
-                                        <div><strong>Asia Pacific</strong></div>
+                                        <div><strong>Asia Pacific (Singapore)</strong></div>
                                         <div>Status: Degraded</div>
                                         <div>Latency: 142ms</div>
                                         <div>Load: 85%</div>
+                                        <div>Capacity: 8.2K RPS</div>
                                     </div>
                                 </div>
-                                <div class="server-node node-aus">
+                                
+                                <div class="server-node node-aus" data-region="aus">
                                     <div class="server-tooltip">
-                                        <div><strong>Australia</strong></div>
+                                        <div><strong>Australia (Sydney)</strong></div>
                                         <div>Status: Operational</div>
                                         <div>Latency: 89ms</div>
                                         <div>Load: 58%</div>
+                                        <div>Capacity: 6.5K RPS</div>
                                     </div>
+                                </div>
+                                
+                                <!-- NEW SERVER NODES -->
+                                <div class="server-node node-sa" data-region="sa">
+                                    <div class="server-tooltip">
+                                        <div><strong>South America (São Paulo)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 45ms</div>
+                                        <div>Load: 48%</div>
+                                        <div>Capacity: 7.8K RPS</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-node node-me" data-region="me">
+                                    <div class="server-tooltip">
+                                        <div><strong>Middle East (Dubai)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 68ms</div>
+                                        <div>Load: 52%</div>
+                                        <div>Capacity: 5.9K RPS</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-node node-africa" data-region="africa">
+                                    <div class="server-tooltip">
+                                        <div><strong>Africa (Johannesburg)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 95ms</div>
+                                        <div>Load: 42%</div>
+                                        <div>Capacity: 4.3K RPS</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-node node-india" data-region="india">
+                                    <div class="server-tooltip">
+                                        <div><strong>India (Mumbai)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 78ms</div>
+                                        <div>Load: 61%</div>
+                                        <div>Capacity: 9.1K RPS</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-node node-japan" data-region="japan">
+                                    <div class="server-tooltip">
+                                        <div><strong>Japan (Tokyo)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 55ms</div>
+                                        <div>Load: 67%</div>
+                                        <div>Capacity: 11.2K RPS</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="server-node node-canada" data-region="canada">
+                                    <div class="server-tooltip">
+                                        <div><strong>Canada (Toronto)</strong></div>
+                                        <div>Status: Operational</div>
+                                        <div>Latency: 38ms</div>
+                                        <div>Load: 45%</div>
+                                        <div>Capacity: 8.7K RPS</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Server Stats -->
+                            <div class="server-stats-grid">
+                                <div class="server-stat">
+                                    <div class="stat-value">15</div>
+                                    <div class="stat-label">Global Regions</div>
+                                </div>
+                                <div class="server-stat">
+                                    <div class="stat-value">248</div>
+                                    <div class="stat-label">Edge Nodes</div>
+                                </div>
+                                <div class="server-stat">
+                                    <div class="stat-value">42ms</div>
+                                    <div class="stat-label">Avg Latency</div>
+                                </div>
+                                <div class="server-stat">
+                                    <div class="stat-value">99.98%</div>
+                                    <div class="stat-label">Uptime</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Enhanced Country List -->
+                            <div class="country-list">
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇺🇸</span>
+                                        <span class="country-name">United States</span>
+                                    </div>
+                                    <div class="country-status allowed">3 Nodes</div>
+                                </div>
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇩🇪</span>
+                                        <span class="country-name">Germany</span>
+                                    </div>
+                                    <div class="country-status allowed">2 Nodes</div>
+                                </div>
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇸🇬</span>
+                                        <span class="country-name">Singapore</span>
+                                    </div>
+                                    <div class="country-status degraded">1 Node</div>
+                                </div>
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇦🇺</span>
+                                        <span class="country-name">Australia</span>
+                                    </div>
+                                    <div class="country-status allowed">1 Node</div>
+                                </div>
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇧🇷</span>
+                                        <span class="country-name">Brazil</span>
+                                    </div>
+                                    <div class="country-status allowed">1 Node</div>
+                                </div>
+                                <div class="country-item">
+                                    <div class="country-info">
+                                        <span class="country-flag">🇦🇪</span>
+                                        <span class="country-name">UAE</span>
+                                    </div>
+                                    <div class="country-status allowed">1 Node</div>
                                 </div>
                             </div>
                         </div>
@@ -4076,6 +4458,33 @@
                 });
             });
             
+            // Map view switching
+            document.querySelectorAll('.map-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const map = document.querySelector('.world-map');
+                    const view = this.getAttribute('data-view');
+                    
+                    // Update active state
+                    document.querySelectorAll('.map-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update map view
+                    map.className = 'world-map ' + view + '-view';
+                    
+                    showToast('Map View Changed', `Switched to ${view} view`, 'success');
+                });
+            });
+            
+            // Enhanced server node interactions
+            document.querySelectorAll('.server-node').forEach(node => {
+                node.addEventListener('click', function() {
+                    const region = this.getAttribute('data-region');
+                    showToast('Server Node Selected', `Viewing details for ${region.toUpperCase()} region`, 'info');
+                });
+            });
+            
             // Add hover effects to cards
             const cards = document.querySelectorAll('.metric-card, .service-card, .security-stat, .uptime-stat');
             cards.forEach(card => {
@@ -4289,7 +4698,7 @@
             
             // Show welcome toast
             setTimeout(() => {
-                showToast('Welcome to GameGuard Monitor', 'Your iGaming servers are being monitored in real-time', 'success');
+                showToast('Welcome to MonitrX', 'Your iGaming servers are being monitored in real-time', 'success');
             }, 1000);
         });
     </script>
