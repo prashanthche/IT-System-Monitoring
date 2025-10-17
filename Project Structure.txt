@@ -1,0 +1,13 @@
+igaming-monitor/
+│
+├── index.html                 # Main application file
+├── README.md                  # Project documentation
+│
+└── Features/
+    ├── Real-time Dashboard    # Live metrics and monitoring
+    ├── Analytics              # Performance charts and trends
+    ├── Incident Management    # Alert and incident tracking
+    ├── Security Monitoring    # Threat detection and prevention
+    ├── Log Management         # System log viewer
+    ├── Historical Data        # Performance history
+    └── Settings               # User preferences and configuration
