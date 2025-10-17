@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iGaming Server Monitoring Dashboard</title>
+    <title>GameGuard Monitor - iGaming Server Monitoring Dashboard</title>
+    <meta name="description" content="Professional iGaming server monitoring dashboard with real-time analytics, security monitoring, and incident management">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -1673,6 +1674,279 @@
             animation: fadeIn 0.5s ease;
         }
         
+        /* NEW: Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .toast {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .toast-success .toast-icon {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success);
+        }
+        
+        .toast-error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast-error .toast-icon {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .toast-warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .toast-warning .toast-icon {
+            background: rgba(255, 204, 0, 0.2);
+            color: var(--warning);
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .toast-message {
+            font-size: 0.9em;
+            color: var(--gray);
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .toast-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--light);
+        }
+        
+        /* NEW: Loading States */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* NEW: Error States */
+        .error-state {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .error-state i {
+            font-size: 2em;
+            color: var(--danger);
+            margin-bottom: 15px;
+        }
+        
+        .error-state h3 {
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
+        
+        /* NEW: Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        /* NEW: Search and Filter */
+        .search-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+        
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--light);
+            padding: 12px 15px 12px 45px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(45, 116, 218, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .filter-select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--light);
+            padding: 12px 15px;
+            border-radius: 10px;
+            min-width: 150px;
+        }
+        
+        /* NEW: Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .pagination-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            color: var(--light);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .pagination-btn.active {
+            background: var(--secondary);
+            box-shadow: 0 0 10px rgba(45, 116, 218, 0.5);
+        }
+        
+        /* NEW: Tooltips */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 17, 34, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: rgba(10, 17, 34, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .tooltip:hover::before,
+        .tooltip:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         /* Responsive Design */
         @media (max-width: 1400px) {
             .metrics-grid {
@@ -1727,18 +2001,27 @@
                 width: 95%;
                 padding: 20px;
             }
+            
+            .search-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
 <body>
     <div class="animated-bg"></div>
+    
+    <!-- Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
     <div class="dashboard">
         <div class="sidebar">
             <div class="logo-container">
                 <div class="logo">
                     <i class="fas fa-server"></i>
                 </div>
-                <div class="logo-text">iGaming Monitor</div>
+                <div class="logo-text">GameGuard</div>
             </div>
             <div class="nav-container">
                 <div class="nav-item active" data-section="dashboard">
@@ -2352,6 +2635,24 @@
                     </div>
                 </div>
                 
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search metrics...">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Services</option>
+                        <option>Kafka</option>
+                        <option>Database</option>
+                        <option>API Gateway</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>Last 24 Hours</option>
+                        <option>Last 7 Days</option>
+                        <option>Last 30 Days</option>
+                    </select>
+                </div>
+                
                 <div class="analytics-grid">
                     <div class="chart-container">
                         <div class="chart-header">
@@ -2517,6 +2818,15 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="pagination">
+                    <div class="pagination-btn active">1</div>
+                    <div class="pagination-btn">2</div>
+                    <div class="pagination-btn">3</div>
+                    <div class="pagination-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
             </section>
             
             <!-- Incidents Section -->
@@ -2534,6 +2844,25 @@
                             <span>Prashanth S</span>
                         </div>
                     </div>
+                </div>
+                
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search incidents...">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Status</option>
+                        <option>Investigating</option>
+                        <option>Identified</option>
+                        <option>Resolved</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Severity</option>
+                        <option>Critical</option>
+                        <option>Warning</option>
+                        <option>Info</option>
+                    </select>
                 </div>
                 
                 <div class="incidents-container">
@@ -2696,6 +3025,25 @@
                             <span>Prashanth S</span>
                         </div>
                     </div>
+                </div>
+                
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search logs...">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Levels</option>
+                        <option>Info</option>
+                        <option>Warning</option>
+                        <option>Error</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Services</option>
+                        <option>API Gateway</option>
+                        <option>Database</option>
+                        <option>Kafka</option>
+                    </select>
                 </div>
                 
                 <div class="logs-container">
@@ -3463,6 +3811,58 @@
             });
         }
 
+        // Toast Notification System
+        function showToast(title, message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                hideToast(toast);
+            }, 5000);
+            
+            // Close button
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                hideToast(toast);
+            });
+        }
+        
+        function hideToast(toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }
+
         // Modal functionality
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -3493,7 +3893,7 @@
                 const reportFormat = document.getElementById('reportFormat').value;
                 const dateRange = document.getElementById('reportDateRange').value;
                 
-                let reportContent = `iGaming Server Monitoring Report\n`;
+                let reportContent = `GameGuard Monitor - Server Monitoring Report\n`;
                 reportContent += `Generated: ${new Date().toLocaleString()}\n`;
                 reportContent += `Date Range: ${document.getElementById('reportDateRange').options[document.getElementById('reportDateRange').selectedIndex].text}\n`;
                 reportContent += `========================================\n\n`;
@@ -3541,8 +3941,8 @@
                 // Close modal
                 closeModal('exportReportModal');
                 
-                // Show success message (you could add a toast notification here)
-                alert('Report generated and downloaded successfully!');
+                // Show success toast
+                showToast('Report Generated', 'Server report has been downloaded successfully', 'success');
             }, 2000);
         }
 
@@ -3595,6 +3995,7 @@
 
         function createAlert() {
             if (!validateAlertForm()) {
+                showToast('Validation Error', 'Please fill all required fields', 'error');
                 return;
             }
             
@@ -3623,6 +4024,9 @@
                 document.getElementById('alertType').value = '';
                 document.getElementById('alertCondition').value = '';
                 document.getElementById('alertDescription').value = '';
+                
+                // Show success toast
+                showToast('Alert Created', 'New monitoring alert has been created successfully', 'success');
                 
                 // Close modal after delay
                 setTimeout(() => {
@@ -3692,17 +4096,18 @@
                 if (document.body.classList.contains('light-theme')) {
                     icon.classList.remove('fa-moon');
                     icon.classList.add('fa-sun');
+                    showToast('Theme Changed', 'Switched to light theme', 'success');
                 } else {
                     icon.classList.remove('fa-sun');
                     icon.classList.add('fa-moon');
+                    showToast('Theme Changed', 'Switched to dark theme', 'success');
                 }
             });
             
             // Notification bell functionality
             const notificationBell = document.getElementById('notificationBell');
             notificationBell.addEventListener('click', function() {
-                // In a real app, this would show a dropdown with notifications
-                alert('You have 3 new notifications');
+                showToast('Notifications', 'You have 3 new notifications', 'warning');
                 this.querySelector('.notification-count').textContent = '0';
             });
             
@@ -3717,7 +4122,7 @@
                 
                 setTimeout(() => {
                     this.innerHTML = '<i class="fas fa-sync-alt"></i><span>Refresh Data</span>';
-                    alert('Data refreshed successfully!');
+                    showToast('Data Refreshed', 'All metrics have been updated', 'success');
                 }, 1500);
             });
             
@@ -3792,6 +4197,29 @@
                 });
             });
             
+            // Search functionality
+            document.querySelectorAll('.search-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const section = this.closest('.content-section');
+                    
+                    // Implement search logic based on section
+                    if (section.id === 'analytics') {
+                        // Search in analytics section
+                        const serviceCards = section.querySelectorAll('.service-card');
+                        serviceCards.forEach(card => {
+                            const serviceName = card.querySelector('.service-name').textContent.toLowerCase();
+                            if (serviceName.includes(searchTerm)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    }
+                    // Add similar logic for other sections
+                });
+            });
+            
             // Simulate real-time updates
             setInterval(() => {
                 // Update metrics with slight random variations
@@ -3858,6 +4286,11 @@
                     logsContainer.insertBefore(newLog, logsContainer.querySelector('.log-entry'));
                 }
             }, 5000);
+            
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('Welcome to GameGuard Monitor', 'Your iGaming servers are being monitored in real-time', 'success');
+            }, 1000);
         });
     </script>
 </body>
